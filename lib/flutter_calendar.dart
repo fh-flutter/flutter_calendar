@@ -66,10 +66,18 @@ class _CalendarState extends State<Calendar> {
   String currentMonth;
   String displayMonth;
 
+  List<Widget> _weekWidgets = [];
+
   DateTime get selectedDate => _selectedDate;
 
   void initState() {
     super.initState();
+    _weekWidgets = Utils.weekdays
+        .map((day) => calendarTile(
+              isDayOfWeek: true,
+              dayOfWeek: day,
+            ))
+        .toList();
     if (widget.initialCalendarDateOverride != null) _selectedDate = widget.initialCalendarDateOverride;
     selectedMonthsDays = Utils.daysInMonth(_selectedDate);
     var firstDayOfCurrentWeek = Utils.firstDayOfWeek(_selectedDate);
@@ -116,36 +124,22 @@ class _CalendarState extends State<Calendar> {
   }
 
   List<Widget> calendarBuilder() {
-    List<Widget> dayWidgets = [];
     List<DateTime> calendarDays = widget.isExpanded ? selectedMonthsDays : selectedWeeksDays;
-    Utils.weekdays.forEach(
-      (day) {
-        dayWidgets.add(
-          calendarTile(
-            isDayOfWeek: true,
-            dayOfWeek: day,
-          ),
-        );
-      },
-    );
-
     bool isThisMonthDay = false;
-    calendarDays.forEach(
+    List<Widget> dayWidgets = calendarDays.map(
       (day) {
         bool isPrevMonthDay = day.month < _selectedDate.month;
         bool isNextMonthDay = day.month > _selectedDate.month;
         isThisMonthDay = !isPrevMonthDay && !isNextMonthDay;
         DateTime _newDay = DateTime(day.year, day.month, day.day);
-        dayWidgets.add(
-          calendarTile(
-              date: _newDay,
-              isThisMonthDay: isThisMonthDay,
-              isSelected: Utils.isSameDay(selectedDate, _newDay),
-              hasEvent: widget.events != null && widget.events.getEvents(_newDay).isNotEmpty),
-        );
+        return calendarTile(
+            date: _newDay,
+            isThisMonthDay: isThisMonthDay,
+            isSelected: Utils.isSameDay(selectedDate, _newDay),
+            hasEvent: widget.events != null && widget.events.getEvents(_newDay).isNotEmpty);
       },
-    );
-    return dayWidgets;
+    ).toList();
+    return _weekWidgets + dayWidgets;
   }
 
   @override
@@ -154,14 +148,7 @@ class _CalendarState extends State<Calendar> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          nameAndIconRow,
-          ExpansionCrossFade(
-            collapsed: calendarGridView,
-            expanded: calendarGridView,
-            isExpanded: widget.isExpanded,
-          ),
-        ],
+        children: <Widget>[nameAndIconRow, calendarGridView],
       ),
     );
   }
@@ -308,7 +295,7 @@ class _CalendarState extends State<Calendar> {
     List<Widget> _list = [];
     Color _color = Colors.grey;
     if (isDayOfWeek) {
-      _color = widget.normalColor;
+      _color = Colors.grey;
     } else {
       if (isSelected || isToday(date)) {
         _color = Colors.white;
@@ -330,14 +317,14 @@ class _CalendarState extends State<Calendar> {
       if (isToday(date)) {
         _list.add(RaisedButton(
             padding: const EdgeInsets.all(0),
-            onPressed: isDayOfWeek ? null : () => handleSelectedDateAndUserCallback(date),
+            onPressed: () => handleSelectedDateAndUserCallback(date),
             child: _day,
             shape: CircleBorder(),
             color: widget.todayColor));
       } else {
         _list.add(FlatButton(
             padding: const EdgeInsets.all(0),
-            onPressed: isDayOfWeek ? null : () => handleSelectedDateAndUserCallback(date),
+            onPressed: () => handleSelectedDateAndUserCallback(date),
             child: _day,
             shape: CircleBorder(),
             color: isSelected ? widget.selectedColor : null));

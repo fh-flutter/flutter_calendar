@@ -8,7 +8,14 @@ main() {
   runApp(CalendarViewApp());
 }
 
-class CalendarViewApp extends StatelessWidget {
+class CalendarViewApp extends StatefulWidget {
+  @override
+  _CalendarViewAppState createState() => _CalendarViewAppState();
+}
+
+class _CalendarViewAppState extends State<CalendarViewApp> {
+  bool _weekFormat = false;
+
   void handleNewDate(date) {
     print("handleNewDate $date");
   }
@@ -41,6 +48,18 @@ class CalendarViewApp extends StatelessWidget {
                   onDateSelected: (date, events) => handleNewDate(date),
                   todayColor: Colors.blue,
                   selectedColor: Color(0xFFC9CFD9),
+                  isExpanded: _weekFormat,
+                  toggleExpanded: IconButton(
+                    icon: Icon(
+                      _weekFormat ? Icons.calendar_today : Icons.calendar_view_day,
+                      color: Color(0xFF609EFE),
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _weekFormat = !_weekFormat;
+                      });
+                    },
+                  ),
                   events: EventList<Event>(events: {
                     DateTime(2019, 3, 22): [Event(date: DateTime(2019, 3, 22), title: 'ceshi')]
                   }),

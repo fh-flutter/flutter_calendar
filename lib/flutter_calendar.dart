@@ -7,9 +7,9 @@ import 'package:tuple/tuple.dart';
 
 typedef DayBuilder(BuildContext context, DateTime day);
 
-class Calendar extends StatefulWidget {
+class Calendar<T> extends StatefulWidget {
   /// 日期选中回调
-  final Function(DateTime, List<Event>) onDateSelected;
+  final Function(DateTime, List<Event<T>>) onDateSelected;
 
   /// 日期范围回调
   final ValueChanged<Tuple2<DateTime, DateTime>> onSelectedRangeChange;
@@ -35,7 +35,7 @@ class Calendar extends StatefulWidget {
   final Widget markedDateWidget;
 
   /// 事件
-  final EventList<Event> events;
+  final EventList<Event<T>> events;
 
   /// 头部标题样式
   final TextStyle headerTitleStyle;

@@ -6,10 +6,11 @@ import 'package:intl/intl.dart';
 import 'package:tuple/tuple.dart';
 
 typedef DayBuilder(BuildContext context, DateTime day);
+typedef OnDateSelected<T> = void Function(DateTime, List<Event<T>>);
 
 class Calendar<T> extends StatefulWidget {
   /// 日期选中回调
-  final Function(DateTime, List<Event<T>>) onDateSelected;
+  final OnDateSelected<T> onDateSelected;
 
   /// 日期范围回调
   final ValueChanged<Tuple2<DateTime, DateTime>> onSelectedRangeChange;
@@ -55,10 +56,10 @@ class Calendar<T> extends StatefulWidget {
       this.headerTitleStyle});
 
   @override
-  _CalendarState createState() => _CalendarState();
+  _CalendarState<T> createState() => _CalendarState<T>();
 }
 
-class _CalendarState extends State<Calendar> {
+class _CalendarState<T> extends State<Calendar<T>> {
   List<DateTime> selectedMonthsDays;
   Iterable<DateTime> selectedWeeksDays;
   DateTime _selectedDate = DateTime.now();
@@ -282,7 +283,7 @@ class _CalendarState extends State<Calendar> {
 
   void _launchDateSelectionCallback(DateTime day) {
     if (widget.onDateSelected != null) {
-      widget.onDateSelected(day, widget.events.getEvents(day));
+      widget.onDateSelected(day, widget.events != null ? widget.events.getEvents(day) : []);
     }
   }
 

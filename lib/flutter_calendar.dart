@@ -9,7 +9,7 @@ typedef DayBuilder(BuildContext context, DateTime day);
 
 class Calendar extends StatefulWidget {
   /// 日期选中回调
-  final ValueChanged<DateTime> onDateSelected;
+  final Function(DateTime, List<Event>) onDateSelected;
 
   /// 日期范围回调
   final ValueChanged<Tuple2<DateTime, DateTime>> onSelectedRangeChange;
@@ -314,7 +314,7 @@ class _CalendarState extends State<Calendar> {
 
   void _launchDateSelectionCallback(DateTime day) {
     if (widget.onDateSelected != null) {
-      widget.onDateSelected(day);
+      widget.onDateSelected(day, widget.events.getEvents(day));
     }
   }
 

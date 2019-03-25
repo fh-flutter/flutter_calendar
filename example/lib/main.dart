@@ -38,7 +38,7 @@ class CalendarViewApp extends StatelessWidget {
             shrinkWrap: true,
             children: <Widget>[
               Calendar(
-                  onDateSelected: (date) => handleNewDate(date),
+                  onDateSelected: (date, events) => handleNewDate(date),
                   todayColor: Colors.blue,
                   selectedColor: Color(0xFFC9CFD9),
                   events: EventList<Event>(events: {

@@ -148,26 +148,6 @@ class _CalendarState extends State<Calendar> {
     return dayWidgets;
   }
 
-  TextStyle configureDateStyle(monthStarted, monthEnded) {
-    TextStyle dateStyles;
-    final TextStyle body1Style = Theme.of(context).textTheme.body1;
-
-    if (widget.isExpanded) {
-      final TextStyle body1StyleDisabled = body1Style.copyWith(
-          color: Color.fromARGB(
-        100,
-        body1Style.color.red,
-        body1Style.color.green,
-        body1Style.color.blue,
-      ));
-
-      dateStyles = monthStarted && !monthEnded ? body1Style : body1StyleDisabled;
-    } else {
-      dateStyles = body1Style;
-    }
-    return dateStyles;
-  }
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -342,27 +322,27 @@ class _CalendarState extends State<Calendar> {
     if (isDayOfWeek) {
       _list.add(FlatButton(
         onPressed: null,
+        padding: const EdgeInsets.all(0),
         child: _day,
         shape: CircleBorder(),
       ));
     } else {
       if (isToday(date)) {
         _list.add(RaisedButton(
-//          elevation: 4.0,
+            padding: const EdgeInsets.all(0),
             onPressed: isDayOfWeek ? null : () => handleSelectedDateAndUserCallback(date),
             child: _day,
             shape: CircleBorder(),
             color: widget.todayColor));
       } else {
         _list.add(FlatButton(
+            padding: const EdgeInsets.all(0),
             onPressed: isDayOfWeek ? null : () => handleSelectedDateAndUserCallback(date),
             child: _day,
             shape: CircleBorder(),
             color: isSelected ? widget.selectedColor : null));
       }
       if (hasEvent && widget.markedDateWidget != null) {
-        print('hasEvent');
-        print(DateTime(2019, 3, 22));
         _list.add(widget.markedDateWidget);
       }
     }
@@ -375,8 +355,6 @@ class _CalendarState extends State<Calendar> {
   }
 
   bool isToday(DateTime date) {
-//    print('today $_today');
-//    print('date $date');
     return _today.year == date.year && _today.month == date.month && _today.day == date.day;
   }
 }

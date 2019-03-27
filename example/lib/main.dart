@@ -45,37 +45,25 @@ class _CalendarViewAppState extends State<CalendarViewApp> {
             shrinkWrap: true,
             children: <Widget>[
               Calendar(
-                  onDateSelected: (date, events) => handleNewDate(date),
-                  todayColor: Colors.blue,
-                  selectedColor: Color(0xFFC9CFD9),
-                  isExpanded: _weekFormat,
-                  toggleExpanded: IconButton(
-                    icon: Icon(
-                      _weekFormat ? Icons.calendar_today : Icons.calendar_view_day,
-                      color: Color(0xFF609EFE),
-                    ),
-                    onPressed: () {
-                      setState(() {
-                        _weekFormat = !_weekFormat;
-                      });
-                    },
+                onDateSelected: (date, events) => handleNewDate(date),
+                todayColor: Colors.blue,
+                selectedColor: Color(0xFFC9CFD9),
+                isExpanded: _weekFormat,
+                toggleExpanded: IconButton(
+                  icon: Icon(
+                    _weekFormat ? Icons.calendar_today : Icons.calendar_view_day,
+                    color: Color(0xFF609EFE),
                   ),
-                  events: EventList<Event>(events: {
-                    DateTime(2019, 3, 22): [Event(date: DateTime(2019, 3, 22), title: 'ceshi')]
-                  }),
-                  markedDateWidget: Positioned(
-                    bottom: 0,
-                    left: 0,
-                    right: 0,
-                    child: Center(
-                      child: Container(
-                        decoration:
-                            BoxDecoration(color: Color(0xFFFF8239), borderRadius: BorderRadius.all(Radius.circular(4))),
-                        height: 5.0,
-                        width: 5.0,
-                      ),
-                    ),
-                  )),
+                  onPressed: () {
+                    setState(() {
+                      _weekFormat = !_weekFormat;
+                    });
+                  },
+                ),
+                events: EventList<Event>(events: {
+                  DateTime(2019, 3, 22): [Event(date: DateTime(2019, 3, 22), title: 'ceshi')]
+                }),
+              ),
             ],
           ),
         ),

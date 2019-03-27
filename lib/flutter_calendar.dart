@@ -41,6 +41,8 @@ class Calendar<T> extends StatefulWidget {
   /// 头部标题样式
   final TextStyle headerTitleStyle;
 
+  final double buttonSize;
+
   Calendar(
       {this.onDateSelected,
       this.onSelectedRangeChange,
@@ -53,7 +55,8 @@ class Calendar<T> extends StatefulWidget {
       this.normalColor,
       this.markedDateWidget,
       this.events,
-      this.headerTitleStyle});
+      this.headerTitleStyle,
+      this.buttonSize: 32.0});
 
   @override
   _CalendarState<T> createState() => _CalendarState<T>();
@@ -294,7 +297,6 @@ class _CalendarState<T> extends State<Calendar<T>> {
       bool isSelected = false,
       String dayOfWeek = '',
       bool isThisMonthDay = false}) {
-    List<Widget> _list = [];
     Color _color = Colors.grey;
     bool _isToday = isToday(date);
     if (isDayOfWeek) {
@@ -306,24 +308,28 @@ class _CalendarState<T> extends State<Calendar<T>> {
         _color = widget.normalColor;
       }
     }
+    Widget _child;
 
     Widget _day = Text(isDayOfWeek ? dayOfWeek : Utils.formatDay(date).toString(),
         style: TextStyle(color: _color), textAlign: TextAlign.center);
     if (isDayOfWeek) {
-      _list.add(FlatButton(
+      _child = FlatButton(
         onPressed: null,
         padding: const EdgeInsets.all(0),
         child: _day,
         shape: CircleBorder(),
-      ));
+      );
     } else {
+      List<Widget> _list = [];
       _list.add(Center(
         child: Container(
-          width: 32,
-          height: 32,
-          decoration: _isToday ? BoxDecoration(
-              boxShadow: [BoxShadow(offset: Offset(0, 1), color: Color(0x57609EFE), blurRadius: 5.0, spreadRadius: 0.0)],
-              borderRadius: BorderRadius.all(Radius.circular(16.0))) : null,
+          width: widget.buttonSize,
+          height: widget.buttonSize,
+          decoration: _isToday
+              ? BoxDecoration(boxShadow: [
+                  BoxShadow(offset: Offset(0, 1), color: Color(0x57609EFE), blurRadius: 5.0, spreadRadius: 0.0)
+                ], borderRadius: BorderRadius.all(Radius.circular(widget.buttonSize / 2)))
+              : null,
           child: FlatButton(
               padding: const EdgeInsets.all(0),
               onPressed: () => handleSelectedDateAndUserCallback(date),
@@ -332,14 +338,34 @@ class _CalendarState<T> extends State<Calendar<T>> {
               color: _isToday ? widget.todayColor : isSelected ? widget.selectedColor : null),
         ),
       ));
-      if (hasEvent && widget.markedDateWidget != null) {
-        _list.add(widget.markedDateWidget);
+      if (hasEvent) {
+        if (widget.markedDateWidget != null) {
+          _list.add(widget.markedDateWidget);
+        } else {
+          _list.add(Positioned(
+            bottom: -8,
+            left: 0,
+            right: 0,
+            child: Center(
+              child: Container(
+                decoration: BoxDecoration(color: Color(0xFFFF8239), borderRadius: BorderRadius.all(Radius.circular(4))),
+                height: 5.0,
+                width: 5.0,
+              ),
+            ),
+          ));
+        }
       }
-    }
-    return Container(
-      child: Stack(
+      _child = Stack(
         overflow: Overflow.visible,
         children: _list,
+      );
+    }
+    return Center(
+      child: Container(
+        width: widget.buttonSize,
+        height: widget.buttonSize,
+        child: _child,
       ),
     );
   }

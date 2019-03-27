@@ -296,10 +296,11 @@ class _CalendarState<T> extends State<Calendar<T>> {
       bool isThisMonthDay = false}) {
     List<Widget> _list = [];
     Color _color = Colors.grey;
+    bool _isToday = isToday(date);
     if (isDayOfWeek) {
       _color = Colors.grey;
     } else {
-      if (isSelected || isToday(date)) {
+      if (isSelected || _isToday) {
         _color = Colors.white;
       } else if (isThisMonthDay) {
         _color = widget.normalColor;
@@ -316,21 +317,21 @@ class _CalendarState<T> extends State<Calendar<T>> {
         shape: CircleBorder(),
       ));
     } else {
-      if (isToday(date)) {
-        _list.add(RaisedButton(
-            padding: const EdgeInsets.all(0),
-            onPressed: () => handleSelectedDateAndUserCallback(date),
-            child: _day,
-            shape: CircleBorder(),
-            color: widget.todayColor));
-      } else {
-        _list.add(FlatButton(
-            padding: const EdgeInsets.all(0),
-            onPressed: () => handleSelectedDateAndUserCallback(date),
-            child: _day,
-            shape: CircleBorder(),
-            color: isSelected ? widget.selectedColor : null));
-      }
+      _list.add(Center(
+        child: Container(
+          width: 32,
+          height: 32,
+          decoration: _isToday ? BoxDecoration(
+              boxShadow: [BoxShadow(offset: Offset(0, 1), color: Color(0x57609EFE), blurRadius: 5.0, spreadRadius: 0.0)],
+              borderRadius: BorderRadius.all(Radius.circular(16.0))) : null,
+          child: FlatButton(
+              padding: const EdgeInsets.all(0),
+              onPressed: () => handleSelectedDateAndUserCallback(date),
+              child: _day,
+              shape: CircleBorder(),
+              color: _isToday ? widget.todayColor : isSelected ? widget.selectedColor : null),
+        ),
+      ));
       if (hasEvent && widget.markedDateWidget != null) {
         _list.add(widget.markedDateWidget);
       }
@@ -344,7 +345,7 @@ class _CalendarState<T> extends State<Calendar<T>> {
   }
 
   bool isToday(DateTime date) {
-    return _today.year == date.year && _today.month == date.month && _today.day == date.day;
+    return date != null && _today.year == date.year && _today.month == date.month && _today.day == date.day;
   }
 }
 
